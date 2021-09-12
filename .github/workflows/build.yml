@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -20,5 +19,8 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+    - name: Upload the binaries
+      uses: actions/upload-artifact@v2
+      with:
+        name: osu!tools
+        path: PerformanceCalculator/bin/Debug/
