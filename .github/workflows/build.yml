@@ -23,4 +23,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: osu!tools
-        path: PerformanceCalculator/bin/Debug/
+        path: PerformanceCalculator/bin/Release/net5.0/win-x64/publish
