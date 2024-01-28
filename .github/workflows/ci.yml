@@ -52,3 +52,12 @@ jobs:
 
       - name: NVika
         run: dotnet nvika parsereport "${{github.workspace}}/inspectcodereport.xml" --treatwarningsaserrors
+
+      - name: Build
+        run: dotnet publish -r win-x64 -c Release /p:PublishSingleFile=true
+
+      - name: Upload the binaries
+        uses: actions/upload-artifact@v2
+        with:
+          name: osu!tools
+          path: PerformanceCalculator/bin/Release/
