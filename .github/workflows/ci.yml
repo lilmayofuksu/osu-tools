@@ -56,8 +56,14 @@ jobs:
       - name: Build
         run: dotnet publish -r win-x64 -c Release /p:PublishSingleFile=true
 
-      - name: Upload the binaries
+      - name: Upload PerformanceCalculator
         uses: actions/upload-artifact@v2
         with:
-          name: osu!tools
-          path: PerformanceCalculator/bin/Release/
+          name: PerformanceCalculator
+          path: PerformanceCalculator/bin/Release/net6.0/win-x64/publish
+
+      - name: Upload PerformanceCalculatorGUI
+        uses: actions/upload-artifact@v2
+        with:
+          name: PerformanceCalculatorGUI
+          path: PerformanceCalculatorGUI/bin/Release/net6.0/win-x64/publish
