@@ -1,6 +1,8 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System;
+using System.Text;
 using McMaster.Extensions.CommandLineUtils;
 using osu.Framework.Logging;
 using osu.Game.Beatmaps.Formats;
@@ -15,10 +17,12 @@ namespace PerformanceCalculator
 {
     [Command("dotnet PerformanceCalculator.dll")]
     [Subcommand(typeof(DifficultyCommand))]
-    [Subcommand(typeof(PerformanceCommand))]
+    [Subcommand(typeof(ModsCommand))]
+    [Subcommand(typeof(PerformanceListingCommand))]
     [Subcommand(typeof(ProfileCommand))]
     [Subcommand(typeof(SimulateListingCommand))]
     [Subcommand(typeof(LeaderboardCommand))]
+    [Subcommand(typeof(LegacyScoreCommand))]
     [HelpOption("-?|-h|--help")]
     public class Program
     {
@@ -26,9 +30,11 @@ namespace PerformanceCalculator
 
         public static void Main(string[] args)
         {
+            Console.OutputEncoding = Encoding.UTF8;
+            Logger.Enabled = false;
+
             LegacyDifficultyCalculatorBeatmapDecoder.Register();
 
-            Logger.Enabled = false;
             CommandLineApplication.Execute<Program>(args);
         }
 

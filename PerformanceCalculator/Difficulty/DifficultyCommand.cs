@@ -39,8 +39,8 @@ namespace PerformanceCalculator.Difficulty
         public string[] Mods { get; }
 
         [UsedImplicitly]
-        [Option(Template = "-j|--json", Description = "Output results as JSON.")]
-        public bool OutputJson { get; }
+        [Option(Template = "-nc|--no-classic", Description = "Excludes the classic mod.")]
+        public bool NoClassicMod { get; }
 
         public override void Execute()
         {
@@ -125,25 +125,25 @@ namespace PerformanceCalculator.Difficulty
         private Result processBeatmap(WorkingBeatmap beatmap)
         {
             // Get the ruleset
-            var ruleset = LegacyHelper.GetRulesetFromLegacyID(Ruleset ?? beatmap.BeatmapInfo.RulesetID);
-            var mods = LegacyHelper.TrimNonDifficultyAdjustmentMods(ruleset, getMods(ruleset).ToArray());
+            var ruleset = LegacyHelper.GetRulesetFromLegacyID(Ruleset ?? beatmap.BeatmapInfo.Ruleset.OnlineID);
+            var mods = NoClassicMod ? getMods(ruleset) : LegacyHelper.ConvertToLegacyDifficultyAdjustmentMods(beatmap.BeatmapInfo, ruleset, getMods(ruleset));
             var attributes = ruleset.CreateDifficultyCalculator(beatmap).Calculate(mods);
 
             return new Result
             {
                 RulesetId = ruleset.RulesetInfo.OnlineID,
-                BeatmapId = beatmap.BeatmapInfo.OnlineID ?? 0,
+                BeatmapId = beatmap.BeatmapInfo.OnlineID,
                 Beatmap = beatmap.BeatmapInfo.ToString(),
                 Mods = mods.Select(m => new APIMod(m)).ToList(),
                 Attributes = attributes
             };
         }
 
-        private List<Mod> getMods(Ruleset ruleset)
+        private Mod[] getMods(Ruleset ruleset)
         {
             var mods = new List<Mod>();
             if (Mods == null)
-                return mods;
+                return Array.Empty<Mod>();
 
             var availableMods = ruleset.CreateAllMods().ToList();
 
@@ -156,7 +156,7 @@ namespace PerformanceCalculator.Difficulty
                 mods.Add(newMod);
             }
 
-            return mods;
+            return mods.ToArray();
         }
 
         private class ResultSet
